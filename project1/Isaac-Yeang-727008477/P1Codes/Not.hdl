@@ -1,0 +1,20 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Not gate:
+ * out = not in
+ */
+
+CHIP Not {
+    // inputs
+    IN in;
+
+    // outputs
+    OUT out;
+
+    PARTS:
+    /* use universal NOR gate
+     . pass in 0 for b
+     . (in + 0)' -> (in)', resulting in NOT */
+    Nor(a=in, b=false, out=out);
+}

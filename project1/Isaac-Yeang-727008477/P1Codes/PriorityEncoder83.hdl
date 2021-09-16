@@ -1,0 +1,55 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Priority Encoder 
+ * out always contains the encoded id of the active input based on priority
+ * idle is 1 if all inputs are inactive, otherwise it is 0
+ */
+
+CHIP PriorityEncoder83 {
+    IN a[8];
+    OUT out[3], idle;
+
+    PARTS:
+    /*** idle output section ***/
+    /* Since idle is only true if all inputs are inactive,
+    then we can just say:
+    idle = (a0+a1+a2+a3+a4+a5+a6+a7)' */
+    Or(a=a[0], b=a[1], out=a1);
+    Or(a=a[2], b=a[3], out=a2);
+    Or(a=a[4], b=a[5], out=a3);
+    Or(a=a[6], b=a[7], out=a4);
+    Or(a=a1, b=a2, out=a5);
+    Or(a=a3, b=a4, out=a6);
+    Or(a=a5, b=a6, out=result);
+    Not(in=result, out=final);
+    Or(a=final, b=false, out=idle);
+
+    /*** out[] output section ***/
+    // out[2]
+    // a7 + a6 + a5 + a4
+    Or(a=a[7], b=a[6], out=q1);
+    Or(a=a[5], b=a[4], out=q2);
+    Or(a=q1, b=q2, out=out[2]);
+
+    //out[1]
+    // a7+a6+(a5+a4)'(a3+a2)
+
+    Not(in=q2, out=f1);
+    Or(a=a[3], b=a[2], out=f2);
+    And(a=f1, b=f2, out=f3);
+    Or(a=q1, b=f3, out=out[1]);
+    
+    //out[0]
+    // a7 + a6'(a5+a4'(a3+a1.a2'))
+    Not(in=a[2], out=NotA2);
+    Not(in=a[4], out=NotA4);
+    Not(in=a[6], out=NotA6);
+
+    And(a=a[1], b=NotA2, out=z1);
+    Or(a=a[3], b=z1, out=z2);
+    And(a=NotA4, b=z2, out=z3);
+    Or(a=a[5], b=z3, out=z4);
+    And(a=NotA6, b=z4, out=z5);
+    Or(a=a[7], b=z5, out=out[0]);
+}

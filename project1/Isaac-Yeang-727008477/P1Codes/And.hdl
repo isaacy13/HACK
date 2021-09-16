@@ -1,0 +1,22 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * And gate: 
+ * out = 1 if (a == 1 and b == 1)
+ *       0 otherwise
+ */
+
+CHIP And {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    /* NOR inputs with 0 or itself to basically "NOT" it
+    then pass through NOR */
+    // inverting inputs
+    Nor(a=a, b=false, out=NotA);
+    Nor(a=false, b=b, out=NotB);
+    
+    // passing through universal NOR gate
+    Nor(a=NotA, b=NotB, out=out);
+}

@@ -1,0 +1,23 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Exclusive-or gate:
+ * out = not (a == b)
+ */
+
+CHIP Xor {
+    IN a, b;
+    OUT out;
+
+    PARTS:
+    /* XOR evaluates true when a'b + ab' */
+    // get NOTs
+    Not(in=a, out=NotA);
+    Not(in=b, out=NotB);
+    // get a'b
+    And(a=NotA, b=b, out=w1);
+    // get ab' 
+    And(a=a, b=NotB, out=w2);
+    // get OR of the ANDs
+    Or(a=w1, b=w2, out=out);
+}

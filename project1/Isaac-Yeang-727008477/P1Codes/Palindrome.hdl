@@ -1,0 +1,32 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Palindrome Detection: 
+ * out = 1 if a palindrome is detected in the sequence of bits "pqrst" 
+ * for example, if sequence "pqrst" is 10101 then out = 1
+ * for example, if sequence "pqrst" is 10110 then out = 0 
+ */
+
+CHIP Palindrome {
+    
+    IN p, q, r, s, t;
+    OUT out;
+	
+    PARTS:
+    // XNOR will be useful here because we're
+    // trying to make sure that:
+    // p & t are equal
+    // AND
+    // q & s are equal
+    // XNOR:
+    // a | b | out
+    //------------
+    // 0 | 0 | 1
+    // 0 | 1 | 0
+    // 1 | 0 | 0
+    // 1 | 1 | 1
+
+    Xnor(a=p, b=t, out=w1);
+    Xnor(a=q, b=s, out=w2);
+    And(a=w1, b=w2, out=out);
+}

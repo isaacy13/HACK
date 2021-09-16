@@ -1,0 +1,22 @@
+// ISAAC YEANG : 727008477
+
+ /**
+ * Or gate:
+ * out = 1 if (a == 1 or b == 1)
+ *       0 otherwise
+ */
+
+CHIP Or {
+    // inputs
+    IN a, b;
+
+    // outputs
+    OUT out;
+
+    PARTS:
+    // start by using universal gate NOR
+    Nor(a=a, b=b, out=NorAB);
+    // invert NOR -> OR
+    Not(in=NorAB, out=out);
+    // out=out updates "OUT out"
+}

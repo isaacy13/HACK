@@ -1,0 +1,24 @@
+// ISAAC YEANG : 727008477
+
+/** 
+ * Multiplexor:
+ * out = a if sel == 0
+ *       b otherwise
+ */
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    /*
+    evaluates to true when:
+    ab's' + abs' + a'bs + abs
+    which simplifies to
+    as' + bs
+    */
+    Not(in=sel, out=NotSel);
+    And(a=a, b=NotSel, out=w1);
+    And(a=sel, b=b, out=w2);
+    Or(a=w1, b=w2, out=out);
+}
