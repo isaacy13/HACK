@@ -1,0 +1,20 @@
+// ISAAC YEANG : 727008477
+// helper chip for ADD6
+// basically Add4.hdl but with inputs
+// adds two 4-bit values
+
+CHIP RCA4 {
+    IN a[4], b[4], filler, carryin; // carryin to make modular
+    OUT out[4], carry;
+
+    PARTS:
+    // composed entirely of FullAdders
+    FullAdder(a=a[0], b=b[0], c=carryin, sum=out[0], carry=c1);
+    FullAdder(a=a[1], b=b[1], c=c1, sum=out[1], carry=c2);
+    FullAdder(a=a[2], b=b[2], c=c2, sum=out[2], carry=c3);
+    FullAdder(a=a[3], b=b[3], c=c3, sum=out[3], carry=c4);
+    
+    // if filler then c2
+    // else c4
+    Mux(a=c4, b=c2, sel=filler, out=carry);
+}

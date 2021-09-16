@@ -1,0 +1,15 @@
+// ISAAC YEANG : 727008477
+// helper chip for ADD6
+// takes 4 bit-large inputs and outputs them in a bus
+
+CHIP Bus4 {
+    IN a, b, c, d;
+    OUT out[4];
+
+    PARTS:
+    // basically does nothing and outputs
+    Or(a=a, b=false, out=out[3]);
+    Or(a=b, b=false, out=out[2]);
+    Or(a=c, b=false, out=out[1]);
+    Or(a=d, b=false, out=out[0]);
+}

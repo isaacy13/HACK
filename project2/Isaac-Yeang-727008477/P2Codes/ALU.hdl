@@ -1,0 +1,83 @@
+// ISAAC YEANG : 727008477
+/**
+ * The ALU (Arithmetic Logic Unit).
+ * Computes one of the following functions:
+ * x+y, x-y, y-x, 0, 1, -1, x, y, -x, -y, !x, !y,
+ * x+1, y+1, x-1, y-1, x&y, x|y on two 16-bit inputs, 
+ * according to 6 input bits denoted zx,nx,zy,ny,f,no.
+ * In addition, the ALU computes two 1-bit outputs:
+ * if the ALU output == 0, zr is set to 1; otherwise zr is set to 0;
+ * if the ALU output < 0, ng is set to 1; otherwise ng is set to 0.
+ */
+
+// Implementation: the ALU logic manipulates the x and y inputs
+// and operates on the resulting values, as follows:
+// if (zx == 1) set x = 0        // 16-bit constant
+// if (nx == 1) set x = !x       // bitwise not
+// if (zy == 1) set y = 0        // 16-bit constant
+// if (ny == 1) set y = !y       // bitwise not
+// if (f == 1)  set out = x + y  // integer 2's complement addition
+// if (f == 0)  set out = x & y  // bitwise and
+// if (no == 1) set out = !out   // bitwise not
+// if (out == 0) set zr = 1
+// if (out < 0) set ng = 1
+
+CHIP ALU {
+    IN  
+        x[16], y[16],  // 16-bit inputs        
+        zx, // zero the x input?
+        nx, // bitwise not the x input?
+        zy, // zero the y input?
+        ny, // bitwise not the y input?
+        f,  // compute out = x + y (if 1) or x & y (if 0)
+        no; // bitwise not the out output?
+
+    OUT 
+        out[16], // 16-bit output
+        zr, // 1 if (out == 0), 0 otherwise
+        ng; // 1 if (out < 0),  0 otherwise
+
+    PARTS:
+    // if (zx == 1) set x = 0        // 16-bit constant
+    Bus16(a=false, b=false, c=false, d=false, e=false, 
+        f=false, g=false, h=false, i=false, j=false,
+        k=false, l=false, m=false, n=false, o=false, 
+        p=false, out=xzero);
+    Mux16(a=x, b=xzero, selector=zx, out=currx1);
+
+    // if (nx == 1) set x = !x       // bitwise not
+    Not16(in=currx1, out=notx);
+    Mux16(a=currx1, b=notx, selector=nx, out=currx2);
+
+    // if (zy == 1) set y = 0        // 16-bit constant
+    Bus16(a=false, b=false, c=false, d=false, e=false, 
+        f=false, g=false, h=false, i=false, j=false,
+        k=false, l=false, m=false, n=false, o=false, 
+        p=false, out=yzero);
+    Mux16(a=y, b=yzero, selector=zy, out=curry1);
+
+    // if (ny == 1) set y = !y       // bitwise not
+    Not16(in=curry1, out=noty);
+    Mux16(a=curry1, b=noty, selector=ny, out=curry2);
+
+    // if (f == 1)  set out = x + y  // integer 2's complement addition
+    // if (f == 0)  set out = x & y  // bitwise and
+    Add16(a=currx2, b=curry2, out=ansadd);
+    And16(a=currx2, b=curry2, out=ansand);
+    Mux16(a=ansand, b=ansadd, selector=f, out=currans);
+
+    // if (no == 1) set out = !out   // bitwise not
+    Not16(in=currans, out=notcurrans);
+    Mux16(a=currans, b=notcurrans, selector=no, out=currans2);
+
+    // if (out == 0) set zr = 1, else 0
+    IsZero(in=currans2, out=iszero);
+    Mux(a=false, b=true, sel=iszero, out=zr);
+
+    // if (out < 0) set ng = 1, else 0
+    BusBitOr(a=currans2, b=false, out=islesszero);
+    Mux(a=false, b=true, sel=islesszero, out=ng);
+
+    // output result
+    Or16(a=currans2, b=false, out=out);   
+}

@@ -1,0 +1,20 @@
+// ISAAC YEANG : 727008477
+// helper chip for Negation16
+// takes two 4-bit buses and concatenates them to create 8-bit bus
+
+CHIP ConcatenateBus4 {
+    IN a[4], b[4];
+    OUT out[8];
+
+    PARTS:
+    // output: aaaabbbb
+    Or(a=a[3], b=false, out=out[7]);
+    Or(a=a[2], b=false, out=out[6]);
+    Or(a=a[1], b=false, out=out[5]);
+    Or(a=a[0], b=false, out=out[4]);
+
+    Or(a=b[3], b=false, out=out[3]);
+    Or(a=b[2], b=false, out=out[2]);
+    Or(a=b[1], b=false, out=out[1]);
+    Or(a=b[0], b=false, out=out[0]);
+}

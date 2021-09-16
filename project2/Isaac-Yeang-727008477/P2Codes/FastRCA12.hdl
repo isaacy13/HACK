@@ -1,0 +1,48 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Optimizes the carry propagation delay along RCA4 boundaries
+ * using duplication and parallel assembly of logic 
+ * The chip performs out=a+b
+ * Both inputs a and b are in UNSIGNED format
+ * carry output reflects the overflow 
+ */
+
+
+CHIP FastRCA12 {
+    IN a[12], b[12];
+    OUT out[12], carry;
+	
+    PARTS:
+    // get input a into 4-bit buses
+    Bus4(a=a[11], b=a[10], c=a[9], d=a[8], out=a1);
+    Bus4(a=a[7], b=a[6], c=a[5], d=a[4], out=a2);
+    Bus4(a=a[3], b=a[2], c=a[1], d=a[0], out=a3);
+
+    // get input b into 4-bit buses
+    Bus4(a=b[11], b=b[10], c=b[9], d=b[8], out=b1);
+    Bus4(a=b[7], b=b[6], c=b[5], d=b[4], out=b2);
+    Bus4(a=b[3], b=b[2], c=b[1], d=b[0], out=b3);
+
+
+    // get values for both 0 and 1 for carryin
+    // all can be computed simultaneously b/c not waiting
+    // ** first one should never have carryin
+    RCA4(a=a3, b=b3, filler=false, carryin=false, out=z1, carry=c1);
+
+    RCA4(a=a2, b=b2, filler=false, carryin=false, out=f2, carry=c2);
+    RCA4(a=a2, b=b2, filler=false, carryin=true, out=f3, carry=c3);
+
+    RCA4(a=a1, b=b1, filler=false, carryin=false, out=f4, carry=c4);
+    RCA4(a=a1, b=b1, filler=false, carryin=true, out=f5, carry=c5);
+    
+    // use muxes to determine which version of each to use
+    Mux(a=c2, b=c3, sel=c1, out=c6);
+    Mux4(a=f2, b=f3, selector=c1, out=z2);
+
+    Mux(a=c4, b=c5, sel=c6, out=carry);
+    Mux4(a=f4, b=f5, selector=c6, out=z3);
+
+    // re-bus and output    
+    ConcatenateThreeBus4(a=z3, b=z2, c=z1, out=out);
+}

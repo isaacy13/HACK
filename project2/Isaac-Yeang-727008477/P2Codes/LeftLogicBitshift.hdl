@@ -1,0 +1,86 @@
+// ISAAC YEANG : 727008477
+/**
+ * Shift x left by y bits, new bits are filled in with 0
+ * The maximum shift is 15 bits (in other words, y is in the binary range 0000 to 1111)
+ * x and y are UNSIGNED
+ * Any overflow is dropped
+ */
+
+CHIP LeftLogicBitshift {
+    IN x[16], y[4];
+    OUT out[16];
+
+    PARTS:
+    // implemented using barrel shifter
+    // y[0]
+    Mux(a=x[15], b=x[14], sel=y[0], out=a1);
+    Mux(a=x[14], b=x[13], sel=y[0], out=a2);
+    Mux(a=x[13], b=x[12], sel=y[0], out=a3);
+    Mux(a=x[12], b=x[11], sel=y[0], out=a4);
+    Mux(a=x[11], b=x[10], sel=y[0], out=a5);
+    Mux(a=x[10], b=x[9], sel=y[0], out=a6);
+    Mux(a=x[9], b=x[8], sel=y[0], out=a7);
+    Mux(a=x[8], b=x[7], sel=y[0], out=a8);
+    Mux(a=x[7], b=x[6], sel=y[0], out=a9);
+    Mux(a=x[6], b=x[5], sel=y[0], out=a10);
+    Mux(a=x[5], b=x[4], sel=y[0], out=a11);
+    Mux(a=x[4], b=x[3], sel=y[0], out=a12);
+    Mux(a=x[3], b=x[2], sel=y[0], out=a13);
+    Mux(a=x[2], b=x[1], sel=y[0], out=a14);
+    Mux(a=x[1], b=x[0], sel=y[0], out=a15);
+    Mux(a=x[0], b=false, sel=y[0], out=a16);
+
+    // y[1]
+    Mux(a=a1, b=a3, sel=y[1], out=b1);
+    Mux(a=a2, b=a4, sel=y[1], out=b2);
+    Mux(a=a3, b=a5, sel=y[1], out=b3);
+    Mux(a=a4, b=a6, sel=y[1], out=b4);
+    Mux(a=a5, b=a7, sel=y[1], out=b5);
+    Mux(a=a6, b=a8, sel=y[1], out=b6);
+    Mux(a=a7, b=a9, sel=y[1], out=b7);
+    Mux(a=a8, b=a10, sel=y[1], out=b8);
+    Mux(a=a9, b=a11, sel=y[1], out=b9);
+    Mux(a=a10, b=a12, sel=y[1], out=b10);
+    Mux(a=a11, b=a13, sel=y[1], out=b11);
+    Mux(a=a12, b=a14, sel=y[1], out=b12);
+    Mux(a=a13, b=a15, sel=y[1], out=b13);
+    Mux(a=a14, b=a16, sel=y[1], out=b14);
+    Mux(a=a15, b=false, sel=y[1], out=b15);
+    Mux(a=a16, b=false, sel=y[1], out=b16);
+
+    // y[2]
+    Mux(a=b1, b=b5, sel=y[2], out=c1);
+    Mux(a=b2, b=b6, sel=y[2], out=c2);
+    Mux(a=b3, b=b7, sel=y[2], out=c3);
+    Mux(a=b4, b=b8, sel=y[2], out=c4);
+    Mux(a=b5, b=b9, sel=y[2], out=c5);
+    Mux(a=b6, b=b10, sel=y[2], out=c6);
+    Mux(a=b7, b=b11, sel=y[2], out=c7);
+    Mux(a=b8, b=b12, sel=y[2], out=c8);
+    Mux(a=b9, b=b13, sel=y[2], out=c9);
+    Mux(a=b10, b=b14, sel=y[2], out=c10);
+    Mux(a=b11, b=b15, sel=y[2], out=c11);
+    Mux(a=b12, b=b16, sel=y[2], out=c12);
+    Mux(a=b13, b=false, sel=y[2], out=c13);
+    Mux(a=b14, b=false, sel=y[2], out=c14);
+    Mux(a=b15, b=false, sel=y[2], out=c15);
+    Mux(a=b16, b=false, sel=y[2], out=c16);
+
+    // y[3]
+    Mux(a=c1, b=c9, sel=y[3], out=out[15]);
+    Mux(a=c2, b=c10, sel=y[3], out=out[14]);
+    Mux(a=c3, b=c11, sel=y[3], out=out[13]);
+    Mux(a=c4, b=c12, sel=y[3], out=out[12]);
+    Mux(a=c5, b=c13, sel=y[3], out=out[11]);
+    Mux(a=c6, b=c14, sel=y[3], out=out[10]);
+    Mux(a=c7, b=c15, sel=y[3], out=out[9]);
+    Mux(a=c8, b=c16, sel=y[3], out=out[8]);
+    Mux(a=c9, b=false, sel=y[3], out=out[7]);
+    Mux(a=c10, b=false, sel=y[3], out=out[6]);
+    Mux(a=c11, b=false, sel=y[3], out=out[5]);
+    Mux(a=c12, b=false, sel=y[3], out=out[4]);
+    Mux(a=c13, b=false, sel=y[3], out=out[3]);
+    Mux(a=c14, b=false, sel=y[3], out=out[2]);
+    Mux(a=c15, b=false, sel=y[3], out=out[1]);
+    Mux(a=c16, b=false, sel=y[3], out=out[0]);
+}

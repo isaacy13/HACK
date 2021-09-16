@@ -1,0 +1,33 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Adds two 6-bit values
+ * The chip performs out=a+b
+ * Both inputs a and b are UNSIGNED 
+ * The carry output reflects the overflow of the Add6 chip
+ */
+
+
+CHIP Add6 {
+    IN a[6], b[6];
+    OUT out[6],carry;
+
+    PARTS:
+    // splitting 6 bits to 4 bits & 4 bits
+    // where two bits are defaulted to 0
+    // because HDL doesn't have notation a[3:0]
+    Bus4(a=a[3], b=a[2], c=a[1], d=a[0], out=w1);
+    Bus4(a=false, b=false, c=a[5], d=a[4], out=w2);
+
+    Bus4(a=b[3], b=b[2], c=b[1], d=b[0], out=x1); // doesn't contain filler aka xxxx
+    Bus4(a=false, b=false, c=b[5], d=b[4], out=x2); // contains "filler" aka 00xx
+
+    // 4-bit RCA
+    RCA4(a=w1, b=x1, filler=false, carryin=false, out=f1, carry=c1);
+    // 4-bit RCA
+    RCA4(a=w2, b=x2, filler=true, carryin=c1, out=f2, carry=carry); // output carry
+
+    // split back into seperate bits and output to output
+    Split4(in=f1, a=out[3], b=out[2], c=out[1], d=out[0]);
+    Split4(in=f2, a=j1, b=j2, c=out[5], d=out[4]);
+}

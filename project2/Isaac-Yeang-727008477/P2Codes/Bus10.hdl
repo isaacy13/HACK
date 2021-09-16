@@ -1,0 +1,20 @@
+// ISAAC YEANG : 727008477
+// helper chip for ADDSUB10
+// 10 inputs -> bus
+
+ CHIP Bus10 {
+    IN a, b, c, d, e, f, g, h, i, j;
+    OUT out[10];
+
+    PARTS:
+    Or(a=a, b=false, out=out[9]);
+    Or(a=b, b=false, out=out[8]);
+    Or(a=c, b=false, out=out[7]);
+    Or(a=d, b=false, out=out[6]);
+    Or(a=e, b=false, out=out[5]);
+    Or(a=f, b=false, out=out[4]);
+    Or(a=g, b=false, out=out[3]);
+    Or(a=h, b=false, out=out[2]);
+    Or(a=i, b=false, out=out[1]);
+    Or(a=j, b=false, out=out[0]);
+}

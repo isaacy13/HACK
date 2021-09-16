@@ -1,0 +1,56 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Adds or Subtracts two 10-bit values.
+ * Both inputs a and b are in SIGNED 2s complement format
+ * when sub == 0, the chip performs add i.e. out=a+b
+ * when sub == 1, the chip performs subtract i.e. out=a-b
+ * carry reflects the overflow calculated for 10-bit add/subtract in 2s complement
+ */
+
+CHIP AddSub10 {
+    IN a[10], b[10], sub;
+    OUT out[10],carry;
+
+    PARTS:
+    // decide whether to negatize b or not
+    // by sub's value
+    Not10(in=b, out=NotB);
+    Inc10(in=NotB, out=NotIncB);
+    Mux10(a=b, b=NotIncB, selector=sub, out=w1);
+
+    // split into workable bits
+    Split10(in=a, a=u1, b=u2, c=u3, d=u4, e=u5, f=u6, g=u7, h=u8, i=u9, j=u10);
+    Split10(in=w1, a=v1, b=v2, c=v3, d=v4, e=v5, f=v6, g=v7, h=v8, i=v9, j=v10);
+
+    // put through full adders  
+    FullAdder(a=u10, b=v10, c=false, sum=f1, carry=c1);
+    FullAdder(a=u9, b=v9, c=c1, sum=f2, carry=c2);
+    FullAdder(a=u8, b=v8, c=c2, sum=f3, carry=c3);
+    FullAdder(a=u7, b=v7, c=c3, sum=f4, carry=c4);
+    FullAdder(a=u6, b=v6, c=c4, sum=f5, carry=c5);
+    FullAdder(a=u5, b=v5, c=c5, sum=f6, carry=c6);
+    FullAdder(a=u4, b=v4, c=c6, sum=f7, carry=c7);
+    FullAdder(a=u3, b=v3, c=c7, sum=f8, carry=c8);
+    FullAdder(a=u2, b=v2, c=c8, sum=f9, carry=c9);
+    FullAdder(a=u1, b=v1, c=c9, sum=f10, carry=c10);
+
+    // output answers
+    Bus10(a=f10, b=f9, c=f8, d=f7, e=f6, f=f5, g=f4, h=f3, i=f2, j=f1, out=out);
+    
+    // overflow is true when:
+    // answer's MSB is different from both input's same MSB
+    // input MSB/lead = l1
+    // input2 MSB/lead = l2
+    // answer lead = al
+    // l1'.l2'.al + l1.l2.al'
+    
+    Not(in=u1, out=NotL1);
+    Not(in=v1, out=NotL2);
+    Not(in=f10, out=NotAL);
+    And(a=u1, b=v1, out=z1);
+    And(a=z1, b=NotAL, out=z2);
+    And(a=NotL1, b=NotL2, out=z3);
+    And(a=z3, b=f10, out=z4);
+    Or(a=z2, b=z4, out=carry);
+}

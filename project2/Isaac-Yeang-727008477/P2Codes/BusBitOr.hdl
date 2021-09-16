@@ -1,0 +1,11 @@
+// ISAAC YEANG : 727008477
+// helper chip for ALU
+// compared 15th bit with other input
+
+CHIP BusBitOr {
+    IN a[16], b;
+    OUT out;
+
+    PARTS:
+    Or(a=a[15], b=b, out=out);
+}

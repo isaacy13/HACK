@@ -1,0 +1,25 @@
+// ISAAC YEANG : 727008477
+// helper chip for FastRCA12
+// takes three 4-bit buses and concatenates them to create 12-bit bus
+
+CHIP ConcatenateThreeBus4 {
+    IN a[4], b[4], c[4];
+    OUT out[12];
+
+    PARTS:
+    // output: aaaabbbbcccc
+    Or(a=a[3], b=false, out=out[11]);
+    Or(a=a[2], b=false, out=out[10]);
+    Or(a=a[1], b=false, out=out[9]);
+    Or(a=a[0], b=false, out=out[8]);
+
+    Or(a=b[3], b=false, out=out[7]);
+    Or(a=b[2], b=false, out=out[6]);
+    Or(a=b[1], b=false, out=out[5]);
+    Or(a=b[0], b=false, out=out[4]);
+
+    Or(a=c[3], b=false, out=out[3]);
+    Or(a=c[2], b=false, out=out[2]);
+    Or(a=c[1], b=false, out=out[1]);
+    Or(a=c[0], b=false, out=out[0]);
+}

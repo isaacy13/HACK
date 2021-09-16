@@ -1,0 +1,15 @@
+// ISAAC YEANG : 727008477
+// helper chip for ADD6
+// takes 4-bit input and outputs four seperate bits
+
+CHIP Split4 {
+    IN in[4];
+    OUT a, b, c, d;
+
+    PARTS:
+    // basically does nothing and outputs
+    Or(a=in[3], b=false, out=a);
+    Or(a=in[2], b=false, out=b);
+    Or(a=in[1], b=false, out=c);
+    Or(a=in[0], b=false, out=d);
+}
