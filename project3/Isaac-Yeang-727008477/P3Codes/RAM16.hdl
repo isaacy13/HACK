@@ -1,0 +1,12 @@
+// Ensure RAM8.hdl works before running this
+
+CHIP RAM16 {
+    IN in[16], address[4], load;
+    OUT out[16];
+
+    PARTS:
+    RAM8(in=in, load=load0, address=address[0..2], out=ram0);
+    RAM8(in=in, load=load1, address=address[0..2], out=ram1);
+    DMux(in=load, sel=address[3], a=load0, b=load1);
+    Mux16(a=ram0, b=ram1, sel=address[3], out=out[0..15]);
+}

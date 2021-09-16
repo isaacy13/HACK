@@ -1,0 +1,25 @@
+// ISAAC YEANG : 727008477
+// helper chip for AGGIECIPHER
+
+ CHIP Split16 {
+    IN in[16];
+    OUT a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p;
+	
+	PARTS:
+    Or(a=in[15], b=false, out=a);
+    Or(a=in[14], b=false, out=b);
+    Or(a=in[13], b=false, out=c);
+    Or(a=in[12], b=false, out=d);
+    Or(a=in[11], b=false, out=e);
+    Or(a=in[10], b=false, out=f);
+    Or(a=in[9], b=false, out=g);
+    Or(a=in[8], b=false, out=h);
+    Or(a=in[7], b=false, out=i);
+    Or(a=in[6], b=false, out=j);
+    Or(a=in[5], b=false, out=k);
+    Or(a=in[4], b=false, out=l);
+    Or(a=in[3], b=false, out=m);
+    Or(a=in[2], b=false, out=n);
+    Or(a=in[1], b=false, out=o);
+    Or(a=in[0], b=false, out=p);
+}

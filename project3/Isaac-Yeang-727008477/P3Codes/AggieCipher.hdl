@@ -1,0 +1,21 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Implement a 4-bit dynamic shift cipher (we call it AggieCipher :)) that computes 
+ * out=in+counter, where counter=<0,1,2,3,4,5,6,....,15,0,1,2,...>
+ * You may ignore overflow.
+ **/
+
+CHIP AggieCipher {
+    IN in[4];
+    OUT out[4];
+	
+	PARTS:
+    // 0 - 15 sequence
+    PC(in=false, load=false, inc=true, reset=false, out=z);
+    Split16(in=z, m=m, n=n, o=o, p=p);
+    FullAdder(a=p, b=in[0], c=false, sum=out[0], carry=carry1);
+    FullAdder(a=o, b=in[1], c=carry1, sum=out[1], carry=carry2);
+    FullAdder(a=n, b=in[2], c=carry2, sum=out[2], carry=carry3);
+    FullAdder(a=m, b=in[3], c=carry3, sum=out[3], carry=carry4);
+}

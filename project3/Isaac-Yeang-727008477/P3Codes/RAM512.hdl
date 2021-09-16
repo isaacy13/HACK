@@ -1,0 +1,43 @@
+// ISAAC YEANG : 727008477
+
+/**
+ * Memory of 512 registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+ 
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    // select a ram64 chip to update
+    DMux(in=load, sel=address[8], a=load1234, b=load5678);
+    DMux(in=load1234, sel=address[7], a=load12, b=load34);
+    DMux(in=load5678, sel=address[7], a=load56, b=load78);
+    DMux(in=load12, sel=address[6], a=load1, b=load2);
+    DMux(in=load34, sel=address[6], a=load3, b=load4);
+    DMux(in=load56, sel=address[6], a=load5, b=load6);
+    DMux(in=load78, sel=address[6], a=load7, b=load8);
+
+    // do updating/outputting
+    RAM64(in=in, address=address[0..5], load=load1, out=R1);
+    RAM64(in=in, address=address[0..5], load=load2, out=R2);
+    RAM64(in=in, address=address[0..5], load=load3, out=R3);
+    RAM64(in=in, address=address[0..5], load=load4, out=R4);
+    RAM64(in=in, address=address[0..5], load=load5, out=R5);
+    RAM64(in=in, address=address[0..5], load=load6, out=R6);
+    RAM64(in=in, address=address[0..5], load=load7, out=R7);
+    RAM64(in=in, address=address[0..5], load=load8, out=R8);
+
+    // output correct result
+    Mux16(a=R1, b=R2, sel=address[6], out=R12);
+    Mux16(a=R3, b=R4, sel=address[6], out=R34);
+    Mux16(a=R5, b=R6, sel=address[6], out=R56);
+    Mux16(a=R7, b=R8, sel=address[6], out=R78);
+    Mux16(a=R12, b=R34, sel=address[7], out=R1234);
+    Mux16(a=R56, b=R78, sel=address[7], out=R5678);
+
+    Mux16(a=R1234, b=R5678, sel=address[8], out=out);
+}

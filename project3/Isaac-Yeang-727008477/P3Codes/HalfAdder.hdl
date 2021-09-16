@@ -1,0 +1,18 @@
+// ISAAC YEANG : 727008477
+// PC helper chip
+/**
+ * Computes the sum of two bits.
+ */
+
+CHIP HalfAdder {
+    IN a, b;    // 1-bit data inputs a and b
+    OUT sum,    // This is sum bit generated as a result of performing a + b
+        carry;  // This is carry-out generated as a result of performing a + b
+
+    PARTS:
+	// via truth table:
+    // sum = a XOR b
+    // carry = ab
+    Xor(a=a, b=b, out=sum);
+    And(a=a, b=b, out=carry);
+}
